@@ -82,7 +82,7 @@ class MyClient(discord.Client):
             # Use TEXT instead of 64-bit integers since SQLite doesn't
             # support 64-bit unsigned integers
             await cur.execute(
-                """CREATE TABLE replies (
+                """CREATE TABLE IF NOT EXISTS replies (
                     message_id TEXT PRIMARY KEY,
                     reply_id TEXT
                 ) WITHOUT ROWID;
