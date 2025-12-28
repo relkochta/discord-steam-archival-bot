@@ -26,7 +26,7 @@ services:
     volumes:
       - "/path/to/clips:/clips"
       - "/path/to/db:/db"
-    env:
+    environment:
       BASE_URL: "https://steam-clip-archive.example.com"
       BOT_TOKEN: "YOUR BOT TOKEN HERE"
 
@@ -43,5 +43,5 @@ services:
 
 Things that should be added at some point:
 
-- Delete archival replies if original message is deleted
+- Delete archived video if all messages referencing it are deleted
 - Enable only on specific channel(s)
