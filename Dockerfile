@@ -5,6 +5,7 @@ COPY . /app
 
 env UV_PYTHON_INSTALL_DIR=/opt/python
 ENV UV_NO_DEV=1
+ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 RUN uv sync --locked
 
