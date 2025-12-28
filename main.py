@@ -157,9 +157,6 @@ class MyClient(discord.Client):
 
         # If we don't remember a reply do this message, ignore
         if reply_id is None:
-            print(
-                "WARNING: Archived message deleted, but no record of reply found in database"
-            )
             return
 
         print(f"Deleting message with id={reply_id}")
