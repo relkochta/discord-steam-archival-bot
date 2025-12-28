@@ -1,6 +1,6 @@
 # Discord Steam Archival Bot
 
-(Shared Steam clips)[https://store.steampowered.com/gamerecording] expire after only 2 days.
+[Shared Steam clips](https://store.steampowered.com/gamerecording) expire after only 2 days.
 This Discord bot automatically downloads every Steam clip posted on a Discord server and replies with an archival link.
 Steam clips are identified as videos hosted on the `cdn.steamusercontent.com` domain.
 
