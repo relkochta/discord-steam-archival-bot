@@ -9,6 +9,7 @@ import aiohttp
 import discord
 
 
+REACT_EMOJI = "\N{FILE CABINET}"
 STEAM_CDN_DOMAIN = "cdn.steamusercontent.com"
 
 
@@ -66,6 +67,9 @@ class MyClient(discord.Client):
 
             # Construct the externally-reachable video URL
             result_url = urljoin(BASE_URL, output_path.name)
+
+            # Share the archived video in the chat
+            await message.add_reaction(REACT_EMOJI)
             await message.reply(
                 f"Steam clip archived! [Link]({result_url})",
                 allowed_mentions=discord.AllowedMentions(
