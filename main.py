@@ -96,6 +96,8 @@ class MyClient(discord.Client):
         await super().close()
 
     async def on_message(self, message: discord.Message):
+        archivals = []
+
         for embed in message.embeds:
             # Is this embed a video?
             if embed.type != "video":
@@ -114,19 +116,29 @@ class MyClient(discord.Client):
 
             # Construct the externally-reachable video URL
             result_url = urljoin(BASE_URL, output_path.name)
+            archivals.append(result_url)
 
-            # Share the archived video in the chat
-            await message.add_reaction(REACT_EMOJI)
-            reply = await message.reply(
-                f"Steam clip archived! [Link]({result_url})",
-                allowed_mentions=discord.AllowedMentions(
-                    everyone=False, users=False, roles=False, replied_user=False
-                ),
-            )
+        if len(archivals) == 0:
+            return
+        elif len(archivals) == 1:
+            content = f"Steam clip archived! [Link]({archivals[0]})"
+        else:
+            content = f"Steam clips archived! Links:\n"
+            for i, archival in enumerate(archivals):
+                content += f"- [Link {i + 1}]({archival})\n"
 
-            # Save the reply id in our database (for deletions)
-            async with self.sqlite_connection.cursor() as cur:
-                await db_insert_reply(cur, message.id, reply.id)
+        # Share the archived video in the chat
+        await message.add_reaction(REACT_EMOJI)
+        reply = await message.reply(
+            content,
+            allowed_mentions=discord.AllowedMentions(
+                everyone=False, users=False, roles=False, replied_user=False
+            ),
+        )
+
+        # Save the reply id in our database (for deletions)
+        async with self.sqlite_connection.cursor() as cur:
+            await db_insert_reply(cur, message.id, reply.id)
 
     async def on_raw_message_delete(self, event: discord.RawMessageDeleteEvent):
         # We can shortcut checks if we haven't reacted to the message
