@@ -71,6 +71,18 @@ async def db_delete_reply(cursor: aiosqlite.Cursor, message_id: int):
     )
 
 
+def content_from_archivals(archivals: List[str]) -> Optional[str]:
+    if len(archivals) == 0:
+        content = None
+    elif len(archivals) == 1:
+        content = f"Steam clip archived! [Link]({archivals[0]})"
+    else:
+        content = f"Steam clips archived! Links:\n"
+        for i, archival in enumerate(archivals):
+            content += f"- [Link {i + 1}]({archival})\n"
+    return content
+
+
 class MyClient(discord.Client):
     async def on_ready(self):
         print(f"Logged on as {self.user}!")
@@ -95,7 +107,7 @@ class MyClient(discord.Client):
 
         await super().close()
 
-    async def on_message(self, message: discord.Message):
+    async def reply_with_archival_link(self, message: discord.Message):
         archivals = []
 
         for embed in message.embeds:
@@ -118,27 +130,47 @@ class MyClient(discord.Client):
             result_url = urljoin(BASE_URL, output_path.name)
             archivals.append(result_url)
 
-        if len(archivals) == 0:
+        content = content_from_archivals(archivals)
+        if content is None:
+            # No archival links to reply with!
             return
-        elif len(archivals) == 1:
-            content = f"Steam clip archived! [Link]({archivals[0]})"
-        else:
-            content = f"Steam clips archived! Links:\n"
-            for i, archival in enumerate(archivals):
-                content += f"- [Link {i + 1}]({archival})\n"
+
+        # First, did we already reply to this message?
+        async with self.sqlite_connection.cursor() as cur:
+            existing_reply_id = await db_fetch_reply(cur, message.id)
 
         # Share the archived video in the chat
-        await message.add_reaction(REACT_EMOJI)
-        reply = await message.reply(
-            content,
-            allowed_mentions=discord.AllowedMentions(
+        reply_data = {
+            "content": content,
+            "allowed_mentions": discord.AllowedMentions(
                 everyone=False, users=False, roles=False, replied_user=False
             ),
-        )
+        }
+        if existing_reply_id is None:
+            # Send a new reply
+            reply = await message.reply(**reply_data)
 
-        # Save the reply id in our database (for deletions)
-        async with self.sqlite_connection.cursor() as cur:
-            await db_insert_reply(cur, message.id, reply.id)
+            # Save the reply id in our database (for deletions)
+            async with self.sqlite_connection.cursor() as cur:
+                await db_insert_reply(cur, message.id, reply.id)
+        else:
+            # Edit the existing reply
+            existing_reply = await message.channel.fetch_message(existing_reply_id)
+            existing_reply.edit(**reply_data)
+
+        await message.add_reaction(REACT_EMOJI)
+
+    async def on_message(self, message: discord.Message):
+        if message.author == self.user:
+            return
+
+        await self.reply_with_archival_link(message)
+
+    async def on_raw_message_edit(self, event: discord.RawMessageUpdateEvent):
+        if event.message.author == self.user:
+            return
+
+        await self.reply_with_archival_link(event.message)
 
     async def on_raw_message_delete(self, event: discord.RawMessageDeleteEvent):
         # We can shortcut checks if we haven't reacted to the message
