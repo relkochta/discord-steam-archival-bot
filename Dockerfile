@@ -3,10 +3,13 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 COPY . /app
 
+env UV_PYTHON_INSTALL_DIR=/opt/python
 ENV UV_NO_DEV=1
 WORKDIR /app
 RUN uv sync --locked
 
 ENV SERV_DIR=/clips
+
+ENV HOME=/tmp
 
 CMD ["uv", "run", "main.py"]
