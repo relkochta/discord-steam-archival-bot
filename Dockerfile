@@ -10,6 +10,7 @@ WORKDIR /app
 RUN uv sync --locked
 
 ENV SERV_DIR=/clips
+ENV SQLITE_DB_URL=/db/sqlite.db
 
 ENV HOME=/tmp
 

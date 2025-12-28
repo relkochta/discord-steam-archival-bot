@@ -25,6 +25,7 @@ services:
     user: 1010:1010
     volumes:
       - "/path/to/clips:/clips"
+      - "/path/to/db:/db"
     env:
       BASE_URL: "https://steam-clip-archive.example.com"
       BOT_TOKEN: "YOUR BOT TOKEN HERE"
