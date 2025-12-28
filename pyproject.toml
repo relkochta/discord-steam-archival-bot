@@ -3,6 +3,7 @@ name = "discord-steam-archival-bot"
 version = "0.1.0"
 description = "Discord bot to automatically archive Steam clips"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.14"
 dependencies = [
     "aiohttp>=3.13.2",
