@@ -14,6 +14,14 @@ Scopes:
 Bot Permissions:
 - Add Reactions
 
+# Docker
+
+A Docker container is provided and can be pulled with:
+
+```
+docker pull ghcr.io/relkochta/discord-steam-archival-bot:main
+```
+
 # Docker Compose
 
 Here's an example (untested!) `docker-compose.yml` to give a sense of how the bot is intended to be used:
@@ -21,7 +29,7 @@ Here's an example (untested!) `docker-compose.yml` to give a sense of how the bo
 ```yml
 services:
   app:
-    image: [BUILT IMAGE ID]
+    image: ghcr.io/relkochta/discord-steam-archival-bot:main
     user: 1010:1010
     volumes:
       - "/path/to/clips:/clips"
@@ -43,5 +51,6 @@ services:
 
 Things that should be added at some point:
 
-- Delete archived video if all messages referencing it are deleted
+- Delete archived video if all messages referencing it are deleted(?)
 - Enable only on specific channel(s)
+- Show embeds for archival replies
