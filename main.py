@@ -78,14 +78,15 @@ def main():
     # Setup
     global BASE_URL, SERV_DIR
     BASE_URL = os.getenv("BASE_URL")
-    SERV_DIR = Path(os.getenv("SERV_DIR"))
+    SERV_DIR = os.getenv("SERV_DIR")
     bot_token = os.getenv("BOT_TOKEN")
-
-    SERV_DIR.mkdir(exist_ok=True)
 
     assert (
         BASE_URL is not None and SERV_DIR is not None and bot_token is not None
     ), "Required environment variables were missing"
+
+    SERV_DIR = Path(SERV_DIR)
+    SERV_DIR.mkdir(exist_ok=True)
 
     intents = discord.Intents.default()
     intents.message_content = True
