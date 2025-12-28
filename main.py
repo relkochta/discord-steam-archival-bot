@@ -47,7 +47,7 @@ async def download_to_file(name: str, url: str, dir: Path) -> Path:
 
 async def db_insert_reply(cursor: aiosqlite.Cursor, message_id: int, reply_id: int):
     await cursor.execute(
-        "INSERT INTO replies VALUES(?, ?)", (str(message_id), str(reply_id))
+        "INSERT INTO replies VALUES(?, ?);", (str(message_id), str(reply_id))
     )
 
 
