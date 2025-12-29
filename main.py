@@ -156,7 +156,7 @@ class MyClient(discord.Client):
         else:
             # Edit the existing reply
             existing_reply = await message.channel.fetch_message(existing_reply_id)
-            existing_reply.edit(**reply_data)
+            await existing_reply.edit(**reply_data)
 
         await message.add_reaction(REACT_EMOJI)
 
