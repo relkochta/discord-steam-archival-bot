@@ -44,8 +44,10 @@ services:
     volumes:
       - "/path/to/clips:/usr/share/nginx/html:ro"
     ports:
-      - 443:443
+      - 80:8080
 ```
+
+It is recommended to use a reverse proxy (caddy, traefik, etc) to provide SSL termination.
 
 # Roadmap
 
